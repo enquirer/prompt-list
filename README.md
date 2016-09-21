@@ -51,6 +51,32 @@ var Enquirer = require('enquirer');
 var enquirer = new Enquirer();
 
 enquirer.register('list', require('prompt-list'));
+
+var questions = [
+  {
+    type: 'list',
+    name: 'order',
+    message: 'What would you like to order?',
+    choices: [
+      'Coke',
+      'Diet Coke',
+      'Cherry Coke',
+      {
+        name: 'Sprite',
+        disabled: 'Temporarily unavailable'
+      },
+      'Water'
+    ]
+  }
+];
+
+enquirer.ask(questions)
+  .then(function(answers) {
+    console.log(answers);
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
 ```
 
 ## Attribution
