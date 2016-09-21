@@ -1,54 +1,57 @@
 'use strict';
 
 var util = require('util');
+var debug = require('debug')('prompt-list');
 var Paginator = require('terminal-paginator');
-var BasePrompt = require('enquirer-prompt');
-var isNumber = require('is-number');
+var Prompt = require('prompt-base');
 var cursor = require('cli-cursor');
 var log = require('log-utils');
 
 /**
- * `list` type prompt
+ * List prompt
  */
 
-function Prompt() {
-  BasePrompt.apply(this, arguments);
-
-  if (!this.question.choices) {
-    throw new TypeError('expected choices to be an array');
+function List(/*question, answers, ui*/) {
+  debug('initializing from <%s>', __filename);
+  Prompt.apply(this, arguments);
+  if (!this.choices) {
+    throw new Error('expected "options.choices" to be an object or array');
   }
 
-  this.firstRender = true;
-  this.selected = this.question.choices.getIndex(this.question.default);
-
-  // Make sure no default is set (so it won't be printed)
+  this.setDefault();
   this.question.default = null;
-  this.paginator = new Paginator();
+
+  this.position = 0;
+  this.paginator = new Paginator(this.options.pageSize);
+
+  this.choices.options.symbol = '';
+  this.choices.options.format = function(str) {
+    return (!this.disabled && this.position === this.index)
+      ? log.cyan(str)
+      : str;
+  };
 }
 
 /**
- * Inherit `BasePrompt`
+ * Inherit Prompt
  */
 
-util.inherits(Prompt, BasePrompt);
+util.inherits(List, Prompt);
 
 /**
  * Start the prompt session
  * @param  {Function} `cb` Callback when prompt is finished
- * @return {Object} Returns the `Prompt` instance
+ * @return {Object} Returns the `List` instance
  */
 
-Prompt.prototype.ask = function(cb) {
+List.prototype.ask = function(cb) {
   this.callback = cb;
-  var self = this;
 
-  this.ui.once('line', function(e) {
-    self.onSubmit({value: self.getChoice(e)});
-  });
-
-  this.ui.on('up', this.onUpKey.bind(this));
-  this.ui.on('down', this.onDownKey.bind(this));
-  this.ui.on('number', this.onNumberKey.bind(this));
+  this.ui.once('error', this.onError.bind(this));
+  this.ui.on('line', this.onSubmit.bind(this));
+  this.ui.on('keypress', function(event) {
+    this.move(event.key.name, event);
+  }.bind(this));
 
   // Init the prompt
   cursor.hide();
@@ -57,116 +60,68 @@ Prompt.prototype.ask = function(cb) {
 };
 
 /**
- * Render the prompt to the terminal
+ * Render the current prompt message.
+ *
+ * @api public
  */
 
-Prompt.prototype.render = function() {
-  // Render question
+List.prototype.render = function(state) {
+  var append = typeof state === 'string'
+    ? log.red('>> ') + state
+    : '';
+
   var message = this.message;
-  if (this.firstRender) {
-    message += log.dim('(Use arrow keys)');
-  }
-  // Render choices or answer depending on the state
   if (this.status === 'answered') {
-    message += log.cyan(this.question.choices.getChoice(this.selected).short);
+    message += log.cyan(this.answer);
   } else {
-    var choicesStr = listRender(this.question.choices, this.selected);
-    var indexPosition = this.question.choices.indexOf(this.question.choices.getChoice(this.selected));
-    message += '\n' + this.paginator.paginate(choicesStr, indexPosition, this.question.pageSize);
+    var str = this.choices.render(this.position);
+    message += '\n' + this.paginator.paginate(str, this.position);
   }
-  this.firstRender = false;
-  this.ui.render(message);
+
+  this.ui.render(message, append);
 };
 
 /**
- * When the user presses the `up` key
+ * When user press `enter` key
  */
 
-Prompt.prototype.onUpKey = function() {
-  var len = this.question.choices.realLength;
-  this.selected = (this.selected > 0) ? this.selected - 1 : len - 1;
-  this.render();
-};
-
-/**
- * When the user presses the `down` key
- */
-
-Prompt.prototype.onDownKey = function() {
-  var len = this.question.choices.realLength;
-  this.selected = (this.selected < len - 1) ? this.selected + 1 : 0;
-  this.render();
-};
-
-/**
- * When the user presses a number key
- */
-
-Prompt.prototype.onNumberKey = function(input) {
-  if (input <= this.question.choices.realLength) {
-    this.selected = input - 1;
+List.prototype.onSubmit = function() {
+  this.answer = this.getAnswer();
+  if (!this.validate(this.answer)) {
+    return;
   }
-  this.render();
-};
 
-/**
- * When they user presses they `enter` key
- */
-
-Prompt.prototype.onSubmit = function(value) {
   this.status = 'answered';
-  this.render();
-  this.ui.write();
-  cursor.show();
-  this.callback(value);
-};
-
-/**
- * Get the currently defined value
- */
-
-Prompt.prototype.getChoice = function() {
-  return this.question.choices.getChoice(this.selected).value;
-};
-
-/**
- * Function for rendering list choices
- * @param  {Number} pointer Position of the pointer
- * @return {String} Rendered content
- */
-
-function listRender(choices, pointer) {
-  var separatorOffset = 0;
-  var output = '';
-
-  choices.forEach(function(choice, i) {
-    if (choice.type === 'separator') {
-      separatorOffset++;
-      output += '  ' + choice + '\n';
-      return;
-    }
-
-    if (choice.disabled) {
-      separatorOffset++;
-      output += '  - ' + choice.name;
-      output += ' (' + (typeof choice.disabled === 'string' ? choice.disabled : 'Disabled') + ')';
-      output += '\n';
-      return;
-    }
-
-    var isSelected = (i - separatorOffset === pointer);
-    var line = (isSelected ? '❯ ' : '  ') + choice.name;
-    if (isSelected) {
-      line = log.cyan(line);
-    }
-    output += line + ' \n';
+  this.on('answer', function() {
+    cursor.show();
   });
 
-  return output.replace(/\n$/, '');
-}
+  this.submitAnswer();
+};
+
+/**
+ * Set the default value to use
+ */
+
+List.prototype.setDefault = function() {
+  if (this.question.hasDefault) {
+    this.choices.enable(this.question.default);
+  }
+};
+
+/**
+ * Get the currently selected value
+ */
+
+List.prototype.getAnswer = function() {
+  var choice = this.choices.getChoice(this.position);
+  if (choice) {
+    return choice.disabled ? false : choice.value;
+  }
+};
 
 /**
  * Module exports
  */
 
-module.exports = Prompt;
+module.exports = List;
