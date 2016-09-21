@@ -1,17 +1,16 @@
 {
-  "name": "enquirer-prompt-list",
-  "description": "List prompt plugin for Enquirer.",
+  "name": "prompt-list",
+  "description": "List-style prompt. Can be used as a standalone prompt, or with a prompt system like [Enquirer].",
   "version": "0.1.0",
-  "homepage": "https://github.com/jonschlinkert/enquirer-prompt-list",
+  "homepage": "https://github.com/enquirer/prompt-list",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": "jonschlinkert/enquirer-prompt-list",
+  "repository": "enquirer/prompt-list",
   "bugs": {
-    "url": "https://github.com/jonschlinkert/enquirer-prompt-list/issues"
+    "url": "https://github.com/enquirer/prompt-list/issues"
   },
   "license": "MIT",
   "files": [
-    "index.js",
-    "LICENSE"
+    "index.js"
   ],
   "main": "index.js",
   "engines": {
@@ -19,6 +18,17 @@
   },
   "scripts": {
     "test": "mocha"
+  },
+  "dependencies": {
+    "cli-cursor": "^1.0.2",
+    "debug": "^2.2.0",
+    "log-utils": "^0.2.1",
+    "prompt-base": "^0.5.0",
+    "terminal-paginator": "^0.2.0"
+  },
+  "devDependencies": {
+    "enquirer": "^0.3.0",
+    "gulp-format-md": "^0.1.10"
   },
   "keywords": [
     "answer",
@@ -46,9 +56,32 @@
     "tty",
     "ui"
   ],
-  "dependencies": {
-    "cli-cursor": "^1.0.2",
-    "is-number": "^2.1.0",
-    "log-utils": "^0.2.1"
+  "verb": {
+    "toc": false,
+    "layout": "common-minimal",
+    "tasks": [
+      "readme"
+    ],
+    "data": {
+      "alias": "list"
+    },
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "related": {
+      "list": [
+        "enquirer",
+        "enquirer-prompt",
+        "enquirer-question"
+      ]
+    },
+    "reflinks": [
+      "enquirer",
+      "verb",
+      "verb-generate-readme"
+    ],
+    "lint": {
+      "reflinks": true
+    }
   }
 }
