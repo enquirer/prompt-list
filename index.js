@@ -4,7 +4,6 @@ var util = require('util');
 var debug = require('debug')('prompt-list');
 var Paginator = require('terminal-paginator');
 var Prompt = require('prompt-base');
-var cursor = require('cli-cursor');
 var log = require('log-utils');
 
 /**
@@ -54,7 +53,7 @@ List.prototype.ask = function(cb) {
   }.bind(this));
 
   // Init the prompt
-  cursor.hide();
+  hide();
   this.render();
   return this;
 };
@@ -92,9 +91,7 @@ List.prototype.onSubmit = function() {
   }
 
   this.status = 'answered';
-  this.on('answer', function() {
-    cursor.show();
-  });
+  this.on('answer', show);
 
   this.submitAnswer();
 };
@@ -119,6 +116,18 @@ List.prototype.getAnswer = function() {
     return choice.disabled ? false : choice.value;
   }
 };
+
+/**
+ * Hide/show cursor
+ */
+
+function show() {
+  process.stdout.write('\u001b[?25h');
+}
+
+function hide() {
+  process.stdout.write('\u001b[?25l');
+}
 
 /**
  * Module exports
