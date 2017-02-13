@@ -8,7 +8,7 @@ enquirer.register('list', require('..'));
 var questions = [
   {
     type: 'list',
-    name: 'theme',
+    name: 'action',
     message: 'What do you want to do?',
     choices: [
       'Order a pizza',
@@ -28,7 +28,7 @@ var questions = [
     message: 'What size do you need?',
     choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
     when: function(answers) {
-      return answers.theme.value === 'Order a pizza';
+      return answers.action === 'Order a pizza';
     },
     filter: function(val) {
       return val.toLowerCase();
@@ -40,7 +40,7 @@ var questions = [
     message: 'What month?',
     choices: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     when: function(answers) {
-      return answers.theme.value === 'Make a reservation';
+      return answers.action === 'Make a reservation';
     },
     filter: function(val) {
       return val.toLowerCase();
