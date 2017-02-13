@@ -10,7 +10,11 @@ var log = require('log-utils');
  * List prompt
  */
 
-function List(/*question, answers, ui*/) {
+function List(question, answers, ui) {
+  if (!(this instanceof List)) {
+    return new List(question, answers, ui);
+  }
+
   debug('initializing from <%s>', __filename);
   Prompt.apply(this, arguments);
   if (!this.choices) {
@@ -47,8 +51,8 @@ List.prototype.ask = function(cb) {
   this.callback = cb;
 
   this.ui.once('error', this.onError.bind(this));
-  this.ui.on('line', this.onSubmit.bind(this));
-  this.ui.on('keypress', function(event) {
+  this.only('line', this.onSubmit.bind(this));
+  this.only('keypress', function(event) {
     this.move(event.key.name, event);
   }.bind(this));
 
@@ -91,8 +95,7 @@ List.prototype.onSubmit = function() {
   }
 
   this.status = 'answered';
-  this.on('answer', show);
-
+  this.once('answer', show);
   this.submitAnswer();
 };
 
