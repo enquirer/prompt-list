@@ -20,14 +20,15 @@
     "test": "mocha"
   },
   "dependencies": {
-    "debug": "^2.3.3",
+    "debug": "^2.6.1",
     "log-utils": "^0.2.1",
-    "prompt-base": "^0.5.1",
+    "prompt-base": "^0.5.2",
     "terminal-paginator": "^0.2.1"
   },
   "devDependencies": {
     "enquirer": "^0.4.1",
-    "gulp-format-md": "^0.1.11"
+    "gulp-format-md": "^0.1.11",
+    "mocha": "^3.2.0"
   },
   "keywords": [
     "answer",
