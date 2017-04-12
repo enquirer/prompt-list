@@ -4,6 +4,10 @@
   "version": "0.1.2",
   "homepage": "https://github.com/enquirer/prompt-list",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "contributors": [
+    "Brian Woodward <brian.woodward@gmail.com> (https://twitter.com/doowb)",
+    "Jon Schlinkert <jon.schlinkert@sellside.com> (http://twitter.com/jonschlinkert)"
+  ],
   "repository": "enquirer/prompt-list",
   "bugs": {
     "url": "https://github.com/enquirer/prompt-list/issues"
@@ -20,14 +24,14 @@
     "test": "mocha"
   },
   "dependencies": {
-    "debug": "^2.6.1",
+    "debug": "^2.6.3",
     "log-utils": "^0.2.1",
-    "prompt-base": "^0.5.2",
+    "prompt-base": "^0.6.0",
     "terminal-paginator": "^0.2.1"
   },
   "devDependencies": {
     "enquirer": "^0.4.1",
-    "gulp-format-md": "^0.1.11",
+    "gulp-format-md": "^0.1.12",
     "mocha": "^3.2.0"
   },
   "keywords": [
