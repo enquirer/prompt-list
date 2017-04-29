@@ -1,10 +1,11 @@
 'use strict';
 
-var util = require('util');
 var debug = require('debug')('prompt-list');
 var Paginator = require('terminal-paginator');
+var utils = require('readline-utils');
 var Prompt = require('prompt-base');
-var log = require('log-utils');
+var cyan = require('ansi-cyan');
+var red = require('ansi-red');
 
 /**
  * List prompt
@@ -30,7 +31,7 @@ function List(question, answers, ui) {
   this.choices.options.symbol = '';
   this.choices.options.format = function(str) {
     return (!this.disabled && this.position === this.index)
-      ? log.cyan(str)
+      ? cyan(str)
       : str;
   };
 }
@@ -39,7 +40,7 @@ function List(question, answers, ui) {
  * Inherit Prompt
  */
 
-util.inherits(List, Prompt);
+Prompt.extend(List);
 
 /**
  * Start the prompt session
@@ -49,15 +50,16 @@ util.inherits(List, Prompt);
 
 List.prototype.ask = function(cb) {
   this.callback = cb;
+  var self = this;
 
   this.ui.once('error', this.onError.bind(this));
   this.only('line', this.onSubmit.bind(this));
   this.only('keypress', function(event) {
-    this.move(event.key.name, event);
-  }.bind(this));
+    self.move(event.key.name, event);
+  });
 
   // Init the prompt
-  hide();
+  utils.cursorHide(this.rl);
   this.render();
   return this;
 };
@@ -70,12 +72,12 @@ List.prototype.ask = function(cb) {
 
 List.prototype.render = function(state) {
   var append = typeof state === 'string'
-    ? log.red('>> ') + state
+    ? red('>> ') + state
     : '';
 
   var message = this.message;
   if (this.status === 'answered') {
-    message += log.cyan(this.answer);
+    message += cyan(this.answer);
   } else {
     var str = this.choices.render(this.position);
     message += '\n' + this.paginator.paginate(str, this.position);
@@ -95,7 +97,12 @@ List.prototype.onSubmit = function() {
   }
 
   this.status = 'answered';
-  this.once('answer', show);
+  var self = this;
+
+  this.once('answer', function() {
+    utils.cursorHide(self.rl);
+  });
+
   this.submitAnswer();
 };
 
@@ -119,18 +126,6 @@ List.prototype.getAnswer = function() {
     return choice.disabled ? false : choice.value;
   }
 };
-
-/**
- * Hide/show cursor
- */
-
-function show() {
-  process.stdout.write('\u001b[?25h');
-}
-
-function hide() {
-  process.stdout.write('\u001b[?25l');
-}
 
 /**
  * Module exports
