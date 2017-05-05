@@ -1,6 +1,6 @@
+var answers = {foo: 'baz'};
 var List = require('..');
 var list = new List({
-  type: 'list',
   name: 'order',
   message: 'What would you like to order?',
   choices: [
@@ -12,10 +12,13 @@ var list = new List({
       disabled: 'Temporarily unavailable'
     },
     'Water'
-  ]
+  ],
+  when: function(answers) {
+    return answers.foo === 'baz';
+  }
 });
 
-list.run()
+list.run(answers)
   .then(function(answer) {
     console.log(answer);
   });

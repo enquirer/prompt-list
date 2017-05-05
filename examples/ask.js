@@ -1,7 +1,7 @@
-var List = require('..');
-var list = new List({
-  type: 'list',
+var Prompt = require('..');
+var prompt = new Prompt({
   name: 'order',
+  default: 3,
   message: 'What would you like to order?',
   choices: [
     'Coke',
@@ -11,10 +11,14 @@ var list = new List({
       name: 'Sprite',
       disabled: 'Temporarily unavailable'
     },
-    'Water'
+    'Water',
+    'Pepsi',
+    'Dr. Pepper',
+    'Yoohoo',
+    'Diet Pepsi'
   ]
 });
 
-list.ask(function(answer) {
+prompt.ask(function(answer) {
   console.log(answer);
 });

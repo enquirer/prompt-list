@@ -13,7 +13,7 @@ var questions = [
     choices: [
       'Order a pizza',
       'Make a reservation',
-      enquirer.separator(),
+      enquirer.separator(' ───────'),
       'Ask for opening hours',
       {
         name: 'Contact support',
@@ -28,9 +28,10 @@ var questions = [
     message: 'What size do you need?',
     choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
     when: function(answers) {
+      console.log(arguments)
       return answers.action === 'Order a pizza';
     },
-    filter: function(val) {
+    transform: function(val) {
       return val.toLowerCase();
     }
   },
@@ -42,7 +43,7 @@ var questions = [
     when: function(answers) {
       return answers.action === 'Make a reservation';
     },
-    filter: function(val) {
+    transform: function(val) {
       return val.toLowerCase();
     },
   }
