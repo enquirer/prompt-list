@@ -5,8 +5,8 @@
   "homepage": "https://github.com/enquirer/prompt-list",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "contributors": [
-    "Brian Woodward <brian.woodward@gmail.com> (https://twitter.com/doowb)",
-    "Jon Schlinkert <jon.schlinkert@sellside.com> (http://twitter.com/jonschlinkert)"
+    "Brian Woodward (https://twitter.com/doowb)",
+    "Jon Schlinkert (http://twitter.com/jonschlinkert)"
   ],
   "repository": "enquirer/prompt-list",
   "bugs": {
@@ -25,13 +25,13 @@
   },
   "dependencies": {
     "ansi-cyan": "^0.1.1",
+    "ansi-dim": "^0.1.1",
     "ansi-red": "^0.1.1",
     "debug": "^2.6.6",
-    "prompt-base": "^0.6.1",
-    "readline-utils": "^0.1.5",
-    "terminal-paginator": "^0.2.1"
+    "prompt-checkbox": "^0.5.1"
   },
   "devDependencies": {
+    "choices-separator": "^1.0.0",
     "enquirer": "^0.4.1",
     "gulp-format-md": "^0.1.12",
     "mocha": "^3.3.0"
@@ -81,11 +81,6 @@
         "enquirer-question"
       ]
     },
-    "reflinks": [
-      "enquirer",
-      "verb",
-      "verb-generate-readme"
-    ],
     "lint": {
       "reflinks": true
     }
