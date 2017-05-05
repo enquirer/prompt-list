@@ -1,10 +1,9 @@
 'use strict';
 
 var debug = require('debug')('prompt-list');
-var Paginator = require('terminal-paginator');
-var utils = require('readline-utils');
-var Prompt = require('prompt-base');
+var Prompt = require('prompt-checkbox');
 var cyan = require('ansi-cyan');
+var dim = require('ansi-dim');
 var red = require('ansi-red');
 
 /**
@@ -18,21 +17,16 @@ function List(question, answers, ui) {
 
   debug('initializing from <%s>', __filename);
   Prompt.apply(this, arguments);
+
   if (!this.choices) {
     throw new Error('expected "options.choices" to be an object or array');
   }
 
-  this.setDefault();
-  this.question.default = null;
-
-  this.position = 0;
-  this.paginator = new Paginator(this.options.pageSize);
-
-  this.choices.options.symbol = '';
+  this.firstRender = true;
+  this.choices.options.checkbox = {on: '', off: '', disabled: ''};
+  this.choices.options.pointer = cyan('❯');
   this.choices.options.format = function(str) {
-    return (!this.disabled && this.position === this.index)
-      ? cyan(str)
-      : str;
+    return (!this.disabled && this.position === this.index) ? cyan(str) : str;
   };
 }
 
@@ -41,28 +35,6 @@ function List(question, answers, ui) {
  */
 
 Prompt.extend(List);
-
-/**
- * Start the prompt session
- * @param  {Function} `cb` Callback when prompt is finished
- * @return {Object} Returns the `List` instance
- */
-
-List.prototype.ask = function(cb) {
-  this.callback = cb;
-  var self = this;
-
-  this.ui.once('error', this.onError.bind(this));
-  this.only('line', this.onSubmit.bind(this));
-  this.only('keypress', function(event) {
-    self.move(event.key.name, event);
-  });
-
-  // Init the prompt
-  utils.cursorHide(this.rl);
-  this.render();
-  return this;
-};
 
 /**
  * Render the current prompt message.
@@ -76,51 +48,25 @@ List.prototype.render = function(state) {
     : '';
 
   var message = this.message;
+  if (this.firstRender) {
+    this.firstRender = false;
+    message += dim('(Use arrow keys)');
+  }
+
   if (this.status === 'answered') {
     message += cyan(this.answer);
   } else {
-    var str = this.choices.render(this.position);
-    message += '\n' + this.paginator.paginate(str, this.position);
+    message += this.choices.render(this.position, {paginate: true});
   }
 
   this.ui.render(message, append);
 };
 
 /**
- * When user press `enter` key
- */
-
-List.prototype.onSubmit = function() {
-  this.answer = this.getAnswer();
-  if (!this.validate(this.answer)) {
-    return;
-  }
-
-  this.status = 'answered';
-  var self = this;
-
-  this.once('answer', function() {
-    utils.cursorHide(self.rl);
-  });
-
-  this.submitAnswer();
-};
-
-/**
- * Set the default value to use
- */
-
-List.prototype.setDefault = function() {
-  if (this.question.hasDefault) {
-    this.choices.enable(this.question.default);
-  }
-};
-
-/**
  * Get the currently selected value
  */
 
-List.prototype.getAnswer = function() {
+List.prototype.getSelected = function() {
   var choice = this.choices.getChoice(this.position);
   if (choice) {
     return choice.disabled ? false : choice.value;
