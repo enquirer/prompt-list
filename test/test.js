@@ -14,67 +14,59 @@ describe('prompt-list', function() {
     assert(prompt instanceof Prompt);
   });
 
-  it('should intantiate without new', function() {
-    var prompt = Prompt({name: 'foo', choices: ['foo', 'bar']});
-    assert(prompt instanceof Prompt);
-  });
-
   it('should throw an error when invalid args are passed', function() {
     assert.throws(function() {
       Prompt();
-    }, /expected question to be a string or object/);
+    });
 
     assert.throws(function() {
       Prompt(new Prompt({name: 'foo'}));
-    }, /expected "options\.choices" to be an object or array/);
+    });
 
     assert.throws(function() {
       new Prompt();
-    }, /expected question to be a string or object/);
-
-    assert.throws(function() {
-      new Prompt({name: 'foo'});
-    }, /expected "options\.choices" to be an object or array/);
+    });
   });
 
-
-  it('should return an answers object on run', function(cb) {
+  it('should return answer as a string from .run', function(cb) {
     var prompt = new Prompt({
       name: 'color',
       message: 'What colors do you like?',
       choices: ['red', 'green', 'blue']
     });
 
+    var unmute = prompt.mute();
+
     prompt.on('ask', function() {
-      setImmediate(function() {
-        prompt.onNumberKey({value: 1});
-        prompt.rl.write('\n');
-      });
+      prompt.rl.input.emit('keypress', '1');
+      prompt.rl.input.emit('keypress', '\n');
     });
 
     prompt.run()
       .then(function(answer) {
         assert.deepEqual(answer, 'red');
+        unmute();
         cb();
       })
   });
 
-  it('should return an answers object on ask', function(cb) {
+  it('should return answer as a string from .ask', function(cb) {
     var prompt = new Prompt({
       name: 'color',
       message: 'What colors do you like?',
       choices: ['red', 'green', 'blue']
     });
 
+    var unmute = prompt.mute();
+
     prompt.on('ask', function() {
-      setImmediate(function() {
-        prompt.onNumberKey({value: 1});
-        prompt.rl.write('\n');
-      });
+      prompt.rl.input.emit('keypress', '1');
+      prompt.rl.input.emit('keypress', '\n');
     });
 
     prompt.ask(function(answer) {
       assert.deepEqual(answer, 'red');
+      unmute();
       cb();
     });
   });

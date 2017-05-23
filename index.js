@@ -1,76 +1,44 @@
 'use strict';
 
 var debug = require('debug')('prompt-list');
-var Prompt = require('prompt-checkbox');
+var Radio = require('prompt-radio');
 var cyan = require('ansi-cyan');
-var dim = require('ansi-dim');
-var red = require('ansi-red');
 
 /**
  * List prompt
  */
 
 function List(question, answers, ui) {
-  if (!(this instanceof List)) {
-    return new List(question, answers, ui);
-  }
-
   debug('initializing from <%s>', __filename);
-  Prompt.apply(this, arguments);
+  Radio.apply(this, arguments);
 
-  if (!this.choices) {
-    throw new Error('expected "options.choices" to be an object or array');
-  }
-
-  this.firstRender = true;
-  this.choices.options.checkbox = {on: '', off: '', disabled: ''};
-  this.choices.options.pointer = cyan('❯');
+  this.choices.options.checkbox = false;
   this.choices.options.format = function(str) {
-    return (!this.disabled && this.position === this.index) ? cyan(str) : str;
+    return this.position === this.index ? cyan(str) : str;
   };
 }
 
 /**
- * Inherit Prompt
+ * Inherit Radio
  */
 
-Prompt.extend(List);
+Radio.extend(List);
 
 /**
- * Render the current prompt message.
- *
- * @api public
+ * Render final selected answer when "line" ("enter" keypress)
+ * is emitted
  */
 
-List.prototype.render = function(state) {
-  var append = typeof state === 'string'
-    ? red('>> ') + state
-    : '';
-
-  var message = this.message;
-  if (this.firstRender) {
-    this.firstRender = false;
-    message += dim('(Use arrow keys)');
-  }
-
-  if (this.status === 'answered') {
-    message += cyan(this.answer);
-  } else {
-    message += this.choices.render(this.position, {paginate: true});
-  }
-
-  this.ui.render(message, append);
+List.prototype.renderAnswer = function() {
+  return cyan(this.getAnswer());
 };
 
 /**
- * Get the currently selected value
+ * Get selected list item
  */
 
-List.prototype.getSelected = function() {
-  var choice = this.choices.getChoice(this.position);
-  if (choice) {
-    return choice.disabled ? false : choice.value;
-  }
+List.prototype.getAnswer = function() {
+  return this.choices.key(this.position);
 };
 
 /**

@@ -18,23 +18,21 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=5.0"
   },
   "scripts": {
     "test": "mocha"
   },
   "dependencies": {
     "ansi-cyan": "^0.1.1",
-    "ansi-dim": "^0.1.1",
-    "ansi-red": "^0.1.1",
-    "debug": "^2.6.6",
-    "prompt-checkbox": "^0.5.1"
+    "debug": "^2.6.8",
+    "prompt-radio": "^1.0.0"
   },
   "devDependencies": {
-    "choices-separator": "^1.0.0",
     "enquirer": "^0.4.1",
-    "gulp-format-md": "^0.1.12",
-    "mocha": "^3.3.0"
+    "choices-separator": "^2.0.0",
+    "mocha": "^3.4.1",
+    "gulp-format-md": "^0.1.12"
   },
   "keywords": [
     "answer",
@@ -44,6 +42,7 @@
     "choice",
     "cli",
     "command",
+    "enquirer-prompt",
     "enquirerprompt",
     "input",
     "inquire",
@@ -52,6 +51,7 @@
     "list",
     "menu",
     "password",
+    "plugin",
     "prompt",
     "prompts",
     "question",

@@ -1,7 +1,7 @@
 var Prompt = require('..');
 var prompt = new Prompt({
   name: 'order',
-  default: 3,
+  default: 2,
   message: 'What would you like to order?',
   choices: [
     'Coke',
