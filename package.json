@@ -26,12 +26,12 @@
   "dependencies": {
     "ansi-cyan": "^0.1.1",
     "debug": "^2.6.8",
-    "prompt-radio": "^1.1.2"
+    "prompt-radio": "^1.2.0"
   },
   "devDependencies": {
     "choices-separator": "^2.0.0",
     "enquirer": "^1.0.2",
-    "gulp-format-md": "^0.1.12",
+    "gulp-format-md": "^1.0.0",
     "mocha": "^3.4.2"
   },
   "keywords": [
