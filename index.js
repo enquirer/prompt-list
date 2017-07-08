@@ -12,10 +12,12 @@ function List(question, answers, ui) {
   debug('initializing from <%s>', __filename);
   Radio.apply(this, arguments);
 
-  this.choices.options.checkbox = false;
-  this.choices.options.format = function(str) {
-    return this.position === this.index ? cyan(str) : str;
-  };
+  this.on('ask', function() {
+    this.choices.options.checkbox = false;
+    this.choices.options.format = function(str) {
+      return this.position === this.index ? cyan(str) : str;
+    };
+  });
 }
 
 /**
