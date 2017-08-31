@@ -3,6 +3,7 @@
 var debug = require('debug')('prompt-list');
 var Radio = require('prompt-radio');
 var cyan = require('ansi-cyan');
+var dim = require('ansi-dim');
 
 /**
  * List prompt
@@ -17,6 +18,14 @@ function List(question, answers, ui) {
     this.choices.options.format = function(str) {
       return this.position === this.index ? cyan(str) : str;
     };
+  });
+
+  this.on('render', () => {
+    if (this.contextHistory.length === 0) {
+      this.helpMessage = dim('(Use arrow keys)');
+    } else {
+      this.helpMessage = '';
+    }
   });
 }
 
