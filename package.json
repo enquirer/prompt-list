@@ -25,14 +25,15 @@
   },
   "dependencies": {
     "ansi-cyan": "^0.1.1",
-    "debug": "^2.6.8",
+    "ansi-dim": "^0.1.1",
+    "debug": "^3.0.1",
     "prompt-radio": "^1.2.1"
   },
   "devDependencies": {
     "choices-separator": "^2.0.0",
     "enquirer": "^1.0.2",
     "gulp-format-md": "^1.0.0",
-    "mocha": "^3.4.2"
+    "mocha": "^3.5.0"
   },
   "keywords": [
     "answer",
@@ -64,7 +65,7 @@
   ],
   "verb": {
     "toc": false,
-    "layout": "common-minimal",
+    "layout": "default",
     "tasks": [
       "readme"
     ],
