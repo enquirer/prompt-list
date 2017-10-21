@@ -12,17 +12,9 @@ var dim = require('ansi-dim');
 function List(question, answers, ui) {
   debug('initializing from <%s>', __filename);
   Radio.apply(this, arguments);
-  var initialized = false;
-
+  this.listInitialized = false;
   this.question.type = 'list';
-  this.on('ask', () => {
-    if (initialized) return;
-    initialized = true;
-    this.helpMessage = this.options.helpMessage || dim('(Use arrow keys)');
-    this.choices.options.checkbox = false;
-    this.choices.options.format = this.renderChoice(this.choices);
-  });
-
+  this.on('ask', this.onAsk.bind(this));
   this.on('render', () => {
     if (this.contextHistory.length > 0) this.helpMessage = '';
   });
@@ -33,6 +25,18 @@ function List(question, answers, ui) {
  */
 
 Radio.extend(List);
+
+/**
+ * Render a choice.
+ */
+
+List.prototype.onAsk = function() {
+  if (this.listInitialized) return;
+  this.listInitialized = true;
+  this.helpMessage = this.options.helpMessage || dim('(Use arrow keys)');
+  this.choices.options.checkbox = false;
+  this.choices.options.format = this.renderChoice(this.choices);
+};
 
 /**
  * Render a choice.
