@@ -12,20 +12,21 @@ var dim = require('ansi-dim');
 function List(question, answers, ui) {
   debug('initializing from <%s>', __filename);
   Radio.apply(this, arguments);
+  var initialized = false;
 
-  this.on('ask', function() {
+  this.question.type = 'list';
+  this.on('ask', () => {
+    if (initialized) return;
+    initialized = true;
+    this.helpMessage = this.options.helpMessage || dim('(Use arrow keys)');
     this.choices.options.checkbox = false;
-    this.choices.options.format = function(str) {
-      return this.position === this.index ? cyan(str) : str;
+    this.choices.options.format = function(line) {
+      return this.position === this.index ? cyan(line) : line;
     };
   });
 
   this.on('render', () => {
-    if (this.contextHistory.length === 0) {
-      this.helpMessage = dim('(Use arrow keys)');
-    } else {
-      this.helpMessage = '';
-    }
+    if (this.contextHistory.length > 0) this.helpMessage = '';
   });
 }
 

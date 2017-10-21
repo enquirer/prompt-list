@@ -14,6 +14,12 @@ describe('prompt-list', function() {
     assert(prompt instanceof Prompt);
   });
 
+  it('should set options.type to `list`', function() {
+    var prompt = new Prompt({name: 'foo', choices: ['foo', 'bar']});
+    assert.equal(prompt.options.type, 'list');
+    assert.equal(prompt.question.type, 'list');
+  });
+
   it('should throw an error when invalid args are passed', function() {
     assert.throws(function() {
       Prompt();
