@@ -20,9 +20,7 @@ function List(question, answers, ui) {
     initialized = true;
     this.helpMessage = this.options.helpMessage || dim('(Use arrow keys)');
     this.choices.options.checkbox = false;
-    this.choices.options.format = function(line) {
-      return this.position === this.index ? cyan(line) : line;
-    };
+    this.choices.options.format = this.renderChoice(this.choices);
   });
 
   this.on('render', () => {
@@ -35,6 +33,16 @@ function List(question, answers, ui) {
  */
 
 Radio.extend(List);
+
+/**
+ * Render a choice.
+ */
+
+List.prototype.renderChoice = function(choices) {
+  return function(line) {
+    return choices.position === choices.index ? cyan(line) : line;
+  };
+};
 
 /**
  * Render final selected answer when "line" ("enter" keypress)
