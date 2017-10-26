@@ -28,7 +28,7 @@ var prompt = new List({
   name: 'size',
   message: 'What size do you need?',
   choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
-  filter: function (val) {
+  filter: function(val) {
     return val.toLowerCase();
   }
 });

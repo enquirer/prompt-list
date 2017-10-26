@@ -31,7 +31,7 @@ describe('prompt-list', function() {
     });
 
     assert.throws(function() {
-      new Prompt();
+      new Prompt(); // eslint-disable-line no-new
     });
   });
 
@@ -54,7 +54,7 @@ describe('prompt-list', function() {
         assert.deepEqual(answer, 'red');
         unmute();
         cb();
-      })
+      });
   });
 
   it('should return answer as a string from .ask', function(cb) {
@@ -78,8 +78,7 @@ describe('prompt-list', function() {
     });
   });
 
-
-  it('should not set a value if there is not a default value and the question was not asked', function () {
+  it('should not set a value if there is not a default value and the question was not asked', function() {
     var unmute;
     var enquirer = new Enquirer().register('list', Prompt);
     var questions = [{
@@ -87,8 +86,8 @@ describe('prompt-list', function() {
       name: 'color',
       message: 'What colors do you like?',
       choices: ['red', 'green', 'blue'],
-      when: function () {
-        return false
+      when: function() {
+        return false;
       }
     }, {
       type: 'list',
@@ -96,18 +95,18 @@ describe('prompt-list', function() {
       default: 1,
       message: 'What animal do you want as a pet?',
       choices: ['cat', 'dog', 'hamster'],
-      when: function () {
-        return false
+      when: function() {
+        return false;
       }
     }, {
       type: 'list',
       name: 'month',
       message: 'What month?',
       choices: ['January', 'February', 'March'],
-      when: function () {
-        return true
+      when: function() {
+        return true;
       }
-    }]
+    }];
 
     return enquirer
       .once('prompt', function(prompt) {
@@ -122,6 +121,7 @@ describe('prompt-list', function() {
         assert.deepEqual(answers.color, undefined);
         assert.deepEqual(answers.pet, 'dog');
         assert.deepEqual(answers.month, 'January');
-      })
-  })
+        unmute();
+      });
+  });
 });

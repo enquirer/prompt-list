@@ -69,18 +69,17 @@ List.prototype.getAnswer = function() {
   return this.choices.key(this.position);
 };
 
-
 /**
  * overriding "when" function to avoid setting a value when there
  * is not a default value and the question was not asked
  */
-List.prototype.when = function () {
+List.prototype.when = function() {
   if (this._when && !this._when.apply(this, arguments)) {
     this.position = this.default === undefined ? -1 : this.default;
     return false;
   }
   return true;
-}
+};
 
 /**
  * Module exports

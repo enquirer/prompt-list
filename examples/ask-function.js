@@ -17,7 +17,7 @@ var prompt = new Prompt({
       'Dr. Pepper',
       'Yoohoo',
       'Diet Pepsi'
-    ]
+    ];
   }
 });
 
