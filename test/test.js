@@ -3,6 +3,7 @@
 require('mocha');
 var assert = require('assert');
 var Prompt = require('..');
+var Enquirer = require('enquirer');
 
 describe('prompt-list', function() {
   it('should export a function', function() {
@@ -76,4 +77,51 @@ describe('prompt-list', function() {
       cb();
     });
   });
+
+
+  it('should not set a value if there is not a default value and the question was not asked', function () {
+    var unmute;
+    var enquirer = new Enquirer().register('list', Prompt);
+    var questions = [{
+      type: 'list',
+      name: 'color',
+      message: 'What colors do you like?',
+      choices: ['red', 'green', 'blue'],
+      when: function () {
+        return false
+      }
+    }, {
+      type: 'list',
+      name: 'pet',
+      default: 1,
+      message: 'What animal do you want as a pet?',
+      choices: ['cat', 'dog', 'hamster'],
+      when: function () {
+        return false
+      }
+    }, {
+      type: 'list',
+      name: 'month',
+      message: 'What month?',
+      choices: ['January', 'February', 'March'],
+      when: function () {
+        return true
+      }
+    }]
+
+    return enquirer
+      .once('prompt', function(prompt) {
+        unmute = prompt.mute();
+      })
+      .on('ask', function() {
+        enquirer.rl.input.emit('keypress', '1');
+        enquirer.rl.input.emit('keypress', '\n');
+      })
+      .ask(questions)
+      .then(answers => {
+        assert.deepEqual(answers.color, undefined);
+        assert.deepEqual(answers.pet, 'dog');
+        assert.deepEqual(answers.month, 'January');
+      })
+  })
 });
