@@ -14,10 +14,6 @@ function List(question, answers, ui) {
   Radio.apply(this, arguments);
   this.listInitialized = false;
   this.question.type = 'list';
-
-  this.default = question.default;
-  this._when = question.when;
-
   this.on('ask', this.onAsk.bind(this));
   this.on('render', () => {
     if (this.contextHistory.length > 0) this.helpMessage = '';
@@ -74,11 +70,12 @@ List.prototype.getAnswer = function() {
  * is not a default value and the question was not asked
  */
 List.prototype.when = function() {
-  if (this._when && !this._when.apply(this, arguments)) {
-    this.position = this.default === undefined ? -1 : this.default;
-    return false;
-  }
-  return true;
+  var that = this;
+  return Promise.resolve(Radio.prototype.when.apply(this, arguments))
+    .then(function(when) {
+      that.position = that.choices.getIndex(that.options.default);
+      return when;
+    });
 };
 
 /**
