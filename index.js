@@ -66,6 +66,19 @@ List.prototype.getAnswer = function() {
 };
 
 /**
+ * overriding "when" function to avoid setting a value when there
+ * is not a default value and the question was not asked
+ */
+List.prototype.when = function() {
+  var that = this;
+  return Promise.resolve(Radio.prototype.when.apply(this, arguments))
+    .then(function(when) {
+      that.position = that.choices.getIndex(that.options.default);
+      return when;
+    });
+};
+
+/**
  * Module exports
  */
 

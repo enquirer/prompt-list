@@ -28,7 +28,7 @@ var questions = [
     message: 'What size do you need?',
     choices: ['Jumbo', 'Large', 'Standard', 'Medium', 'Small', 'Micro'],
     when: function(answers) {
-      console.log(arguments)
+      console.log(arguments);
       return answers.action === 'Order a pizza';
     },
     transform: function(val) {
@@ -45,7 +45,7 @@ var questions = [
     },
     transform: function(val) {
       return val.toLowerCase();
-    },
+    }
   }
 ];
 
