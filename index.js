@@ -54,7 +54,7 @@ List.prototype.renderChoice = function(choices) {
  */
 
 List.prototype.renderAnswer = function() {
-  return cyan(this.getAnswer());
+  return cyan(this.choices.get(this.position, 'value'));
 };
 
 /**
