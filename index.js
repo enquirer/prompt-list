@@ -1,16 +1,14 @@
 'use strict';
 
-var debug = require('debug')('prompt-list');
-var Radio = require('prompt-radio');
-var cyan = require('ansi-cyan');
-var dim = require('ansi-dim');
+const Radio = require('prompt-radio');
+const cyan = require('ansi-cyan');
+const dim = require('ansi-dim');
 
 /**
  * List prompt
  */
 
 function List(question, answers, ui) {
-  debug('initializing from <%s>', __filename);
   Radio.apply(this, arguments);
   this.listInitialized = false;
   this.question.type = 'list';
@@ -69,6 +67,7 @@ List.prototype.getAnswer = function() {
  * overriding "when" function to avoid setting a value when there
  * is not a default value and the question was not asked
  */
+
 List.prototype.when = function() {
   var that = this;
   return Promise.resolve(Radio.prototype.when.apply(this, arguments))
